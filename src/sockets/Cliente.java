@@ -6,22 +6,38 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JOptionPane;
 
+/**
+ * Esta clase representa un cliente para un chat basado en sockets.
+ * El cliente se conecta a un servidor a través de su dirección IP y puerto,
+ * y permite al usuario enviar y recibir mensajes en tiempo real.
+ */
 public class Cliente {
     
-
+    /**
+     * Método principal que ejecuta el cliente de chat.
+     * El cliente solicita al usuario la dirección IP y el puerto del servidor,
+     * establece una conexión con el servidor, y maneja la lectura y escritura de mensajes.
+     *
+     * @param args Argumentos de línea de comandos (no utilizados).
+     */
     public static void main(String[] args) {
         try {
-        	BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
-        	 System.out.print("Introduce la IP del servidor: ");
-             String serverAddress = consoleReader.readLine();
+            // Crear un BufferedReader para leer la entrada desde la consola
+            BufferedReader consoleReader = new BufferedReader(new InputStreamReader(System.in));
+            
+            // Pedir al usuario que ingrese la dirección IP del servidor
+            System.out.print("Introduce la IP del servidor: ");
+            String serverAddress = consoleReader.readLine();
              
-             // Pedir al usuario que ingrese el puerto del servidor
-             System.out.print("Introduce el puerto del servidor: ");
-             int serverPort = Integer.parseInt(consoleReader.readLine());
+            // Pedir al usuario que ingrese el puerto del servidor
+            System.out.print("Introduce el puerto del servidor: ");
+            int serverPort = Integer.parseInt(consoleReader.readLine());
              
-        	Socket socket = new Socket(serverAddress, serverPort);
+            // Establecer la conexión con el servidor usando la IP y puerto proporcionados
+            Socket socket = new Socket(serverAddress, serverPort);
             BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
+            
             // Leer la respuesta inicial del servidor
             String response;
             boolean first = true;
@@ -37,6 +53,7 @@ public class Cliente {
                 if (response.equals("Presiona ENTER para enviar mensajes")) {
                     break;
                 }
+                // Leer la entrada del usuario desde la consola y enviarla al servidor
                 String input = consoleReader.readLine();
                 writer.println(input);
             }
@@ -46,6 +63,7 @@ public class Cliente {
                 try {
                     String mensaje;
                     while ((mensaje = reader.readLine()) != null) {
+                        // Mostrar el mensaje recibido con un timestamp
                         String timestamp = new SimpleDateFormat("dd/MM-HH:mm:ss").format(new Date());
                         System.out.println();  // Añadir un salto de línea antes del mensaje
                         System.err.println(mensaje); // Mostrar el mensaje en tiempo real
